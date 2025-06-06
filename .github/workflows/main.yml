@@ -1,0 +1,45 @@
+# .github/workflows/main.yml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - feature/deprecations-fix # Adicione sua branch aqui para testar antes do merge
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12' # Use a versão do Python do seu projeto
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install flake8 flake8-django # Instala o Flake8 no pipeline
+
+    - name: Run Flake8 for code quality and deprecation checks
+      run: |
+        flake8 . # Executa o Flake8. Se houver erros, este passo falhará.
+      env:
+        # Opcional: Se você precisar de variáveis de ambiente para a execução do Flake8
+        # Por exemplo, se Flake8 precisar acessar alguma configuração do Django
+        # DJANGO_SETTINGS_MODULE: weather_app.settings
+
+    # Este é um exemplo de um passo adicional para rodar testes Django (opcional)
+    # - name: Run Django tests
+    #   run: |
+    #     python manage.py test
+    #   env:
+    #     DJANGO_SETTINGS_MODULE: weather_app.settings
