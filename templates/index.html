@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previsão do Tempo</title>
+    {% load static %} {# Carrega os arquivos estáticos do Django #}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Consulta de Previsão do Tempo</h1>
+        <div class="search-box">
+            <input type="text" id="cityInput" placeholder="Digite o nome da cidade">
+            <button id="getWeatherBtn">Obter Previsão</button>
+        </div>
+        <div id="weatherResult" class="weather-result">
+            {# O conteúdo da previsão será inserido aqui pelo JavaScript #}
+            <p>Digite uma cidade e clique em "Obter Previsão".</p>
+        </div>
+        <div id="errorMessage" class="error-message">
+            {# Mensagens de erro serão exibidas aqui #}
+        </div>
+    </div>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
