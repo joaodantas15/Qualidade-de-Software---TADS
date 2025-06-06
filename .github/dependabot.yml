@@ -1,0 +1,13 @@
+# .github/dependabot.yml
+version: 2
+updates:
+  - package-ecosystem: "pip" # Monitora dependências Python (do requirements.txt)
+    directory: "/"          # Escaneia a partir do diretório raiz do repositório
+    schedule:
+      interval: "daily"     # Verifica atualizações diariamente (você pode usar weekly, monthly)
+    reviewers:
+      - "joaodantas15"      # Substitua pelo seu nome de usuário GitHub
+    labels:
+      - "dependencies"      # Adiciona a label 'dependencies' aos PRs/Alertas
+      - "security"          # Adiciona a label 'security'
+    target-branch: "main"   # Opcional: Define a branch para onde os PRs serão abertos
