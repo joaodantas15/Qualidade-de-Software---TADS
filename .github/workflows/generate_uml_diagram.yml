@@ -1,0 +1,47 @@
+name: Generate Domain Class Diagram
+
+on:
+  push:
+    branches:
+      - main # Executa sempre que um código novo chega na 'main'
+
+jobs:
+  generate-diagram:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Permite que a Action escreva no repositório
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.1' 
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y graphviz
+
+      - name: Install Python dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Generate class diagram
+        run: |
+          python manage.py graph_models -a -o domain_classes.png
+
+      - name: Commit and push if diagram changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add domain_classes.png
+          # A linha a seguir verifica se houve mudanças no arquivo. Se houver, commita e faz o push.
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "docs: Auto-generate domain class diagram"
+            git push
+          else
+            echo "No changes to the diagram."
+          fi
