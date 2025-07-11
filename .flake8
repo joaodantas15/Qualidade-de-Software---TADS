@@ -1,0 +1,5 @@
+[flake8]
+# Ignora erros de linha muito longa (E501) em alguns arquivos, como migrações
+# e aumenta o tamanho máximo da linha para 88, padrão do formater `black`.
+max-line-length = 88
+exclude = .git,__pycache__,docs/source/conf.py,old,build,dist,*/migrations/*
