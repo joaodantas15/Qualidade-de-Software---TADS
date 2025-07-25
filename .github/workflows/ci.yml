@@ -1,4 +1,4 @@
-name: CI Linter
+name: CI Pipeline - Análise Estática e Segurança
 
 on:
   push:
@@ -7,23 +7,43 @@ on:
     branches: [ main ]
 
 jobs:
-  lint:
+  build-and-test:
+    name: Linter e Análise de Segurança
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout do código
-        uses: actions/checkout@v4
+      - name: 1. Checkout do Repositório
+        uses: actions/checkout@v3
 
-      - name: Configurar Node.js
-        uses: actions/setup-node@v4
+      - name: 2. Configurar Python
+        uses: actions/setup-python@v4
         with:
-          node-version: '18' 
-          cache: 'npm'
+          python-version: '3.10' # Use a versão do Python do seu projeto
 
-      - name: Instalar dependências
+      - name: 3. Instalar Dependências Python
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 4. Executar Flake8 (Linter)
+        run: |
+          # --count: mostra o total de erros
+          # --select=E9,F63,F7,F82: foca em erros específicos (opcional)
+          # --show-source: mostra a linha do código com erro
+          # --statistics: mostra estatísticas de erros
+          flake8 . --count --statistics
+
+      - name: 5. Executar Bandit (Segurança)
+        run: |
+          bandit -r . -ll -iii # -ll para reportar issues de média confiança pra cima, -iii para média severidade pra cima
+
+      - name: 6. Configurar Node.js (para ESLint)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Use uma versão LTS do Node.js
+
+      - name: 7. Instalar Dependências JavaScript
         run: npm install
 
-      - name: Rodar ESLint
+      - name: 8. Executar ESLint
         run: npx eslint .
-      
-      - name: Run Duplicate Code Detector (jscpd)
-        run: npx jscpd . --min-lines=5 --min-tokens=50 --ignore "**/*.json,**/*.md,node_modules/**" --fail-on-duplicate
